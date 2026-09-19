@@ -268,4 +268,15 @@ export class TodoStore {
     if (removed > 0) { this.persist(next); }
     return removed;
   }
+
+  /** Move all open tasks from `next` → `session`. Returns moved count. */
+  promoteNextToSession(): number {
+    const list = this.getAll();
+    let moved = 0;
+    for (const t of list) {
+      if (!t.done && t.bucket === 'next') { t.bucket = 'session'; moved += 1; }
+    }
+    if (moved > 0) { this.persist(list); }
+    return moved;
+  }
 }

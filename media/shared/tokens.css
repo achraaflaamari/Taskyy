@@ -1,0 +1,85 @@
+@layer tokens {
+:root {
+  color-scheme: light dark;
+
+  /* — spacing (4pt) — */
+  --ds-space-1: 4px;
+  --ds-space-2: 8px;
+  --ds-space-3: 12px;
+  --ds-space-4: 16px;
+  --ds-space-5: 20px;
+  --ds-space-6: 24px;
+  --ds-space-8: 32px;
+
+  /* — radii — */
+  --ds-radius-sm: 4px;
+  --ds-radius-md: 6px;
+  --ds-radius-lg: 8px;
+  --ds-radius-xl: 12px;
+  --ds-radius-pill: 999px;
+
+  /* — type — */
+  --ds-font-sans: var(--vscode-font-family, -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif);
+  --ds-font-mono: var(--vscode-editor-font-family, ui-monospace, monospace);
+  --ds-text-2xs: 10px;
+  --ds-text-xs: 11px;
+  --ds-text-sm: 12px;
+  --ds-text-md: 13px;
+  --ds-text-lg: 17px;
+  --ds-leading-tight: 1.2;
+  --ds-leading-base: 1.45;
+  --ds-tracking-label: 0.06em;
+  --ds-weight-regular: 400;
+  --ds-weight-medium: 500;
+  --ds-weight-semibold: 600;
+
+  /* — semantic (100% vscode, no hard hex) — */
+  --ds-bg: var(--vscode-sideBar-background, transparent);
+  --ds-bg-editor: var(--vscode-editor-background, var(--ds-bg));
+  --ds-bg-input: var(--vscode-input-background, transparent);
+  --ds-bg-hover: var(--vscode-toolbar-hoverBackground, rgba(127,127,127,0.16));
+  --ds-bg-active: var(--vscode-toolbar-activeBackground, rgba(127,127,127,0.24));
+  --ds-bg-list-hover: var(--vscode-list-hoverBackground, var(--ds-bg-hover));
+  --ds-ink: var(--vscode-foreground, var(--vscode-sideBar-foreground, #1e1e1e));
+  --ds-ink-muted: var(--vscode-descriptionForeground, #6b7280);
+  --ds-ink-link: var(--vscode-textLink-foreground, var(--vscode-button-background, #4f6bed));
+  --ds-border: var(--vscode-editorWidget-border, rgba(127,127,127,0.28));
+  --ds-border-input: var(--vscode-input-border, var(--ds-border));
+  --ds-border-panel: var(--vscode-panel-border, var(--ds-border));
+  --ds-focus: var(--vscode-focusBorder, var(--vscode-button-background, #4f6bed));
+  --ds-accent: var(--vscode-button-background, #4f6bed);
+  --ds-accent-fg: var(--vscode-button-foreground, #fff);
+  --ds-ok: var(--vscode-charts-green, var(--vscode-testing-iconPassed, #4caf50));
+  --ds-warn: var(--vscode-charts-orange, var(--vscode-testing-iconFailed, #d67e2c));
+  --ds-danger: var(--vscode-charts-red, #e51400);
+  --ds-blue: var(--vscode-charts-blue, #3794ff);
+  --ds-purple: var(--vscode-charts-purple, #b180d7);
+  --ds-disabled: var(--vscode-disabledForeground, #8a8a8a);
+
+  /* — motion — */
+  --ds-ease: 150ms ease;
+  --ds-ease-fast: 90ms linear;
+}
+
+* { box-sizing: border-box; }
+
+html, body { scrollbar-gutter: stable; }
+
+:focus-visible { outline: 1px solid var(--ds-focus); outline-offset: 1px; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+@media (prefers-contrast: more) {
+  :root { --ds-border: var(--vscode-contrastBorder, var(--ds-border)); }
+}
+}
+
+@layer base {
+  body {
+    margin: 0;
+    color: var(--ds-ink);
+    font: var(--ds-text-md)/var(--ds-leading-base) var(--ds-font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+}

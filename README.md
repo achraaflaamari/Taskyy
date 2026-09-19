@@ -1,12 +1,17 @@
-# Mascot (VS Code)
+# Taskyy — Cute Pet Mascot for Devs
 
-A calm workspace companion that lives in the Explorer, plus honest
-local-first project analytics. The mascot stays quiet while you type and
-reacts to things that matter: errors, terminal and task results, commits,
-save/debug milestones — plus a boop when you need one.
+> **Search keywords:** `pet` `mascot` `animal` `cute` `dev` `coding` `todo` `task` `time` `timetracker` `productivity` `analytics` `dashboard` `focus`
+
+A calm **pet** & **animal mascot companion** for **devs** & **coding** — lives in the Explorer, plus local **todo / task** manager and **time tracking** & **analytics**. The **mascot** stays quiet while you **code**/**type** and reacts to things that matter: errors, terminal and task results, commits, save/debug milestones — plus a boop when you need one.
+
+*Formerly “Mascot” — now **Taskyy**. All `mascot.*` settings and commands still work.*
+
+![Taskyy — pet mascot + todo + time analytics](media/demo/taskyy-demo.gif)
 
 21 animals, sizes Small 96 / Medium 140 / Large 200 (or any 64–320 px),
 configured in the native Settings UI (`mascot.*`).
+
+> Add your GIF to `media/demo/taskyy-demo.gif` (and thumb `media/demo/taskyy-thumb.png` for the video link below). See `media/demo/README.md`.
 
 ## The companion
 
@@ -87,8 +92,11 @@ warning notification when the Explorer view is not visible.
 ```bash
 npm run compile
 npx @vscode/vsce package --no-dependencies --allow-missing-repository
-code --install-extension mascot-explorer-0.5.0.vsix
+code --install-extension taskyy-0.5.0.vsix
 ```
+
+[![Watch demo video](media/demo/taskyy-thumb.png)](https://www.youtube.com/watch?v=XXXX)
+*Click the image for the full video — or see `media/demo/taskyy-demo.gif` above.*
 
 Then **reload the window** (`Developer: Reload Window`) so the newly
 installed extension activates.
@@ -102,7 +110,7 @@ yet in this window. Fix:
 2. Check the Extensions view: **Mascot** must be present and enabled.
 3. Still failing? Check `Output` → **Log (Extension Host)** and
    `Help` → **Toggle Developer Tools** console for activation errors, then
-   reinstall: `code --uninstall-extension mascot.mascot-explorer` and
+   reinstall: `code --uninstall-extension mascot.taskyy` and
    install the `.vsix` again, followed by a window reload.
 
 ## Layout

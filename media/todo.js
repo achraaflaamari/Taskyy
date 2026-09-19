@@ -1,15 +1,15 @@
 /**
- * Sidebar TODO runtime: quick-add header + collapsible bucket sections.
+ * Sidebar TODO runtime: quick-add + filter + kind-grouped list.
  * Shared MascotController drives the mascot (faces + webview-local pointer gaze).
  *
  * Extension → webview: { type:'settings' } { type:'todo:list', tasks, summary }
  *                       { type:'todo:error', message } { type:'react', name, say }
- * Webview → extension: { type:'ready' } { type:'todo:add|update|toggle|move|remove|clearCompleted' }
+ * Webview → extension: { type:'ready' } { type:'todo:add|update|toggle|move|remove|clearCompleted|promoteNext' }
  *                       { type:'openAnalytics' } { type:'openSettings' }
  *
- * The host owns the store (workspaceState + validation); this view only
- * renders `todo:list` and posts intents. Local UI prefs (quick-add bucket /
- * type, collapsed sections) persist via vscode.setState.
+ * Filter (All/Now/Next/Later) is webview-local only (vscode.setState); store stays unfiltered.
+ * Add form uses two selects (bucket + kind) — filter switch no longer chooses the bucket.
+ * List is grouped by kind (Feature/Fix/Improvement) + Done, not by bucket.
  */
 (function () {
   'use strict';
@@ -97,21 +97,22 @@
   // ---- state ----
   var tasks = [];
   var editingId = null;
-  var quickBucket = (getUi() || {}).bucket || 'session';
-  var quickKind = (getUi() || {}).type || 'feature';
-  var collapsed = Object.assign({ done: true }, ((getUi() || {}).collapsed || {}));
+  var ui = getUi() || {};
+  var filter = ui.filter || 'all';
+  if (['all', 'session', 'next', 'someday', 'done'].indexOf(filter) === -1) { filter = 'all'; }
+  var quickBucket = ui.bucket || 'session';
+  var quickKind = ui.type || 'feature';
+  var collapsed = Object.assign({ done: true }, (ui.collapsed || {}));
   if (['session', 'next', 'someday'].indexOf(quickBucket) === -1) { quickBucket = 'session'; }
   if (['feature', 'fix', 'improvement'].indexOf(quickKind) === -1) { quickKind = 'feature'; }
 
-  var SECTIONS = [
-    { id: 'session', label: 'This session' },
-    { id: 'next', label: 'Next up' },
-    { id: 'someday', label: 'Someday' },
-    { id: 'done', label: 'Done' },
+  var KIND_SECTIONS = [
+    { id: 'feature', label: 'Feature' },
+    { id: 'fix', label: 'Fix' },
+    { id: 'improvement', label: 'Improvement' },
   ];
   var KIND_LABEL = { feature: 'FEATURE', fix: 'FIX', improvement: 'IMPR' };
   var KIND_CLASS = { feature: 'feat', fix: 'fix', improvement: 'impr' };
-  var QUICK_KINDS = ['feature', 'fix', 'improvement'];
 
   var todayStr = '';
   try {
@@ -123,12 +124,17 @@
   var elDoneN = document.getElementById('doneN');
   var elProg = document.getElementById('prog');
   var elInput = document.getElementById('in');
+  var elBucketPick = document.getElementById('bucketPick');
+  var elKindPick = document.getElementById('kindPick');
+  var elAddBtn = document.getElementById('addBtn');
   var elSeg = document.getElementById('seg');
-  var elType = document.getElementById('type');
   var elError = document.getElementById('todo-error');
-  var elClear = document.getElementById('clear');
   var elList = document.getElementById('list');
   var elFull = document.getElementById('full');
+
+  // restore picks
+  if (elBucketPick) { elBucketPick.value = quickBucket; }
+  if (elKindPick) { elKindPick.value = quickKind; }
 
   function showError(msg) {
     if (!elError) { return; }
@@ -148,16 +154,11 @@
     return e;
   }
 
-  function syncQuickControls() {
-    if (elSeg) {
-      Array.prototype.forEach.call(elSeg.querySelectorAll('button'), function (b) {
-        b.setAttribute('aria-pressed', b.getAttribute('data-b') === quickBucket ? 'true' : 'false');
-      });
-    }
-    if (elType) {
-      elType.textContent = KIND_LABEL[quickKind] || quickKind.toUpperCase();
-      elType.className = 'iconbtn typebtn badge ' + (KIND_CLASS[quickKind] || 'feat');
-    }
+  function syncFilter() {
+    if (!elSeg) { return; }
+    Array.prototype.forEach.call(elSeg.querySelectorAll('button'), function (b) {
+      b.setAttribute('aria-pressed', b.getAttribute('data-b') === filter ? 'true' : 'false');
+    });
   }
 
   function doAdd() {
@@ -165,7 +166,9 @@
     var title = elInput.value.trim();
     if (!title) { showError('Type a task title first.'); return; }
     clearError();
-    post('todo:add', { title: title, bucket: quickBucket, kind: quickKind });
+    var bucket = elBucketPick ? elBucketPick.value : quickBucket;
+    var kind = elKindPick ? elKindPick.value : quickKind;
+    post('todo:add', { title: title, bucket: bucket, kind: kind });
     elInput.value = '';
     elInput.focus();
   }
@@ -176,23 +179,29 @@
       else if (ev.key === 'Escape') { elInput.blur(); }
     });
   }
+  if (elAddBtn) { elAddBtn.addEventListener('click', doAdd); }
+  if (elBucketPick) {
+    elBucketPick.addEventListener('change', function () {
+      quickBucket = elBucketPick.value;
+      setUi({ bucket: quickBucket });
+    });
+  }
+  if (elKindPick) {
+    elKindPick.addEventListener('change', function () {
+      quickKind = elKindPick.value;
+      setUi({ type: quickKind });
+    });
+  }
   if (elSeg) {
     elSeg.addEventListener('click', function (ev) {
       var b = ev.target && ev.target.closest ? ev.target.closest('button') : null;
       if (!b || !b.getAttribute('data-b')) { return; }
-      quickBucket = b.getAttribute('data-b');
-      setUi({ bucket: quickBucket });
-      syncQuickControls();
+      filter = b.getAttribute('data-b');
+      setUi({ filter: filter });
+      syncFilter();
+      render();
     });
   }
-  if (elType) {
-    elType.addEventListener('click', function () {
-      quickKind = QUICK_KINDS[(QUICK_KINDS.indexOf(quickKind) + 1) % QUICK_KINDS.length];
-      setUi({ type: quickKind });
-      syncQuickControls();
-    });
-  }
-  if (elClear) { elClear.addEventListener('click', function () { post('todo:clearCompleted'); }); }
   if (elFull) {
     elFull.addEventListener('click', function (ev) { ev.preventDefault(); post('openAnalytics'); });
   }
@@ -210,12 +219,12 @@
       + '<div class="todo-editor-row">'
       + '<label>Deadline<input type="date" data-f="deadline" value="' + esc(t.deadline || '') + '" /></label>'
       + '<label>Bucket<select data-f="bucket">'
-      + SECTIONS.slice(0, 3).map(function (s) {
+      + [{ id: 'session', label: 'Now' }, { id: 'next', label: 'Next' }, { id: 'someday', label: 'Later' }].map(function (s) {
         return '<option value="' + s.id + '"' + (t.bucket === s.id ? ' selected' : '') + '>' + esc(s.label) + '</option>';
       }).join('')
       + '</select></label>'
       + '<label>Type<select data-f="kind">'
-      + QUICK_KINDS.map(function (k) {
+      + ['feature', 'fix', 'improvement'].map(function (k) {
         return '<option value="' + k + '"' + (t.kind === k ? ' selected' : '') + '>' + esc(k) + '</option>';
       }).join('')
       + '</select></label>'
@@ -285,20 +294,77 @@
 
   function render() {
     if (!elList) { return; }
-    var open = tasks.filter(function (t) { return !t.done; });
-    var done = tasks.filter(function (t) { return !!t.done; });
-    if (elOpen) { elOpen.textContent = String(open.length); }
-    if (elDoneN) { elDoneN.textContent = String(done.length); }
-    if (elProg) { elProg.style.width = tasks.length ? (done.length / tasks.length * 100) + '%' : '0'; }
-    syncQuickControls();
+    var openAll = tasks.filter(function (t) { return !t.done; });
+    var doneAll = tasks.filter(function (t) { return !!t.done; });
+    if (elOpen) { elOpen.textContent = String(openAll.length); }
+    if (elDoneN) { elDoneN.textContent = String(doneAll.length); }
+    if (elProg) { elProg.style.width = tasks.length ? (doneAll.length / tasks.length * 100) + '%' : '0'; }
+    syncFilter();
     elList.textContent = '';
+
+    // Done tab: shows only done tasks, clear button at top of the tab
+    if (filter === 'done') {
+      if (doneAll.length === 0) {
+        elList.append(el('div', 'empty muted', 'No done tasks yet.'));
+        return;
+      }
+      var top = el('div', 'done-top');
+      var clearTop = el('button', 'link-btn', 'Clear done (' + doneAll.length + ')');
+      clearTop.type = 'button';
+      clearTop.addEventListener('click', function () { post('todo:clearCompleted'); });
+      top.append(clearTop);
+      elList.append(top);
+      KIND_SECTIONS.forEach(function (sec) {
+        var items = doneAll.filter(function (t) { return t.kind === sec.id; });
+        if (!items.length) { return; }
+        var h = el('h3');
+        h.tabIndex = 0;
+        var isCollapsed = !!collapsed['done_' + sec.id];
+        h.append(el('span', '', isCollapsed ? '▸' : '▾'), el('span', '', sec.label), el('span', 'n', '(' + items.length + ')'));
+        var flip = function () {
+          collapsed['done_' + sec.id] = !isCollapsed;
+          setUi({ collapsed: collapsed });
+          render();
+        };
+        h.addEventListener('click', flip);
+        h.addEventListener('keydown', function (ev) {
+          if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); flip(); }
+        });
+        elList.append(h);
+        if (!isCollapsed) { items.forEach(function (t) { elList.append(rowNode(t)); }); }
+      });
+      return;
+    }
+
+    // Open tabs (All/Now/Next/Later): kind-grouped open tasks only
+    var open = (function () {
+      if (filter === 'all') { return openAll; }
+      return openAll.filter(function (t) { return t.bucket === filter; });
+    })();
+
+    // promote button: visible only when Now empty and Next has open tasks (and not in Done tab)
+    var nowOpen = openAll.filter(function (t) { return t.bucket === 'session'; });
+    var nextOpen = openAll.filter(function (t) { return t.bucket === 'next'; });
+    if (nowOpen.length === 0 && nextOpen.length > 0 && (filter === 'all' || filter === 'session')) {
+      var promo = el('button', 'promote-btn', 'Move ' + nextOpen.length + ' from Next → Now');
+      promo.type = 'button';
+      promo.addEventListener('click', function () { post('todo:promoteNext'); });
+      elList.append(promo);
+    }
+
     if (!tasks.length) {
       elList.append(el('div', 'empty muted', 'Nothing yet. Type above and press Enter.'));
       return;
     }
-    SECTIONS.forEach(function (sec) {
-      var items = sec.id === 'done' ? done : open.filter(function (t) { return t.bucket === sec.id; });
-      if (!items.length) { return; } // empty sections stay hidden
+    if (open.length === 0) {
+      elList.append(el('div', 'empty muted', 'No tasks in this filter.'));
+      return;
+    }
+
+    // group open tasks by kind (Feature/Fix/Improvement)
+    KIND_SECTIONS.forEach(function (sec) {
+      var items = open.filter(function (t) { return t.kind === sec.id; });
+      if (!items.length) { return; }
       var h = el('h3');
       h.tabIndex = 0;
       var isCollapsed = !!collapsed[sec.id];
@@ -331,13 +397,12 @@
   });
 
   setSheets('fox');
-  // Default matches the persisted mascot.size (extension pushes the real value via 'settings' below).
   ctl.setSettings({ enabled: true, characterId: 'fox', size: 140, clickReaction: true, autoReaction: true, followPointer: true });
   ctl.paint();
   ctl.bindVisibility();
   ctl.startIdle();
   ctl.scheduleGreeting();
-  syncQuickControls();
+  syncFilter();
 
   post('ready');
 })();

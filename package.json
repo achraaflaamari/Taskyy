@@ -1,27 +1,50 @@
 {
-  "name": "mascot-explorer",
-  "displayName": "Mascot",
-  "description": "A calm workspace companion that lives in the Explorer and reacts to errors, terminal results and commits — never to typing.",
+  "name": "taskyy",
+  "displayName": "Taskyy",
+  "description": "Taskyy — cute pet mascot companion for devs. 21 animals, todos, local time tracking & coding analytics. Todo, tasks, focus, time — stays quiet while you code.",
   "version": "0.5.0",
   "publisher": "mascot",
   "license": "MIT",
   "icon": "media/mascots/thumbs/fox.webp",
+  "galleryBanner": { "color": "#1e1e1e", "theme": "dark" },
+  "pricing": "Free",
+  "keywords": [
+    "taskyy",
+    "mascot",
+    "pet",
+    "animal",
+    "animals",
+    "cute",
+    "kawaii",
+    "companion",
+    "dev",
+    "developer",
+    "coding",
+    "code",
+    "programming",
+    "todo",
+    "todos",
+    "task",
+    "tasks",
+    "task-manager",
+    "productivity",
+    "time",
+    "time-tracker",
+    "time-tracking",
+    "timetracker",
+    "analytics",
+    "dashboard",
+    "focus",
+    "project",
+    "workspace"
+  ],
+  "repository": { "type": "git", "url": "https://github.com/mascot/mascot-explorer" },
+  "bugs": { "url": "https://github.com/mascot/mascot-explorer/issues" },
+  "homepage": "https://github.com/mascot/mascot-explorer#readme",
   "engines": {
     "vscode": "^1.85.0"
   },
   "categories": ["Other"],
-  "activationEvents": [
-    "onView:mascotExplorerView",
-    "onView:mascotTodoView",
-    "onCommand:mascot.openSettings",
-    "onCommand:mascot.selectCharacter",
-    "onCommand:mascot.setSize",
-    "onCommand:mascot.toggleBehaviour",
-    "onCommand:mascot.boop",
-    "onCommand:mascot.openAnalytics",
-    "onCommand:mascot.resetStats",
-    "onCommand:mascot.clearCompletedTodos"
-  ],
   "main": "./out/extension.js",
   "contributes": {
     "viewsContainers": {
@@ -53,7 +76,8 @@
       {
         "command": "mascot.boop",
         "title": "Mascot: Boop",
-        "category": "Mascot"
+        "category": "Mascot",
+        "icon": "$(heart)"
       },
       {
         "command": "mascot.openSettings",
@@ -79,7 +103,8 @@
       {
         "command": "mascot.openAnalytics",
         "title": "Mascot: Open Analytics",
-        "category": "Mascot"
+        "category": "Mascot",
+        "icon": "$(graph)"
       },
       {
         "command": "mascot.resetStats",
@@ -95,9 +120,19 @@
     "menus": {
       "view/title": [
         {
-          "command": "mascot.openSettings",
+          "command": "mascot.openAnalytics",
           "when": "view == mascotExplorerView",
           "group": "navigation@1"
+        },
+        {
+          "command": "mascot.boop",
+          "when": "view == mascotExplorerView",
+          "group": "navigation@2"
+        },
+        {
+          "command": "mascot.openSettings",
+          "when": "view == mascotExplorerView",
+          "group": "navigation@3"
         }
       ]
     },

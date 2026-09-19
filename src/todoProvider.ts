@@ -73,6 +73,10 @@ export class TodoProvider implements vscode.WebviewViewProvider {
         } else if (message.type === 'todo:clearCompleted') {
           this.store.clearCompleted();
           this.postList();
+        } else if (message.type === 'todo:promoteNext') {
+          const moved = this.store.promoteNextToSession();
+          if (moved === 0) { this.postError('Nothing to move.'); return; }
+          this.postList();
         } else if (message.type === 'openSettings') {
           await vscode.commands.executeCommand('mascot.openSettings');
         } else if (message.type === 'openAnalytics') {
@@ -109,6 +113,12 @@ export class TodoProvider implements vscode.WebviewViewProvider {
   }
 
   private getHtml(webview: vscode.Webview): string {
+    const tokensUri = webview.asWebviewUri(
+      vscode.Uri.joinPath(this.extensionUri, 'media', 'shared', 'tokens.css'),
+    );
+    const mascotCssUri = webview.asWebviewUri(
+      vscode.Uri.joinPath(this.extensionUri, 'media', 'shared', 'mascot.css'),
+    );
     const scriptUri = webview.asWebviewUri(
       vscode.Uri.joinPath(this.extensionUri, 'media', 'todo.js'),
     );
@@ -127,6 +137,8 @@ export class TodoProvider implements vscode.WebviewViewProvider {
 <meta charset="utf-8" />
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src ${webview.cspSource} data:; style-src ${webview.cspSource} 'unsafe-inline'; script-src 'nonce-${n}';" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="stylesheet" href="${tokensUri}" />
+<link rel="stylesheet" href="${mascotCssUri}" />
 <link rel="stylesheet" href="${styleUri}" />
 </head>
 <body data-mascots-root="${mascotsRoot}">
@@ -143,19 +155,36 @@ export class TodoProvider implements vscode.WebviewViewProvider {
         <div><b id="open">0</b> open · <span id="doneN">0</span> done</div>
         <div class="bar"><i id="prog"></i></div>
       </div>
-      <button class="link-btn" id="clear" type="button" title="Delete all completed tasks">Clear done</button>
     </div>
     <div class="add">
       <input id="in" placeholder="Add a task, press Enter" aria-label="New task title" autocomplete="off" maxlength="200" />
       <div class="opts">
-        <div class="seg" id="seg" role="group" aria-label="Where to add">
-          <button type="button" data-b="session" aria-pressed="true">Now</button>
-          <button type="button" data-b="next" aria-pressed="false">Next</button>
-          <button type="button" data-b="someday" aria-pressed="false">Later</button>
-        </div>
-        <button class="iconbtn typebtn badge feature" id="type" type="button" title="Task type (click to change)">FEATURE</button>
+        <label class="field" aria-label="Bucket">
+          <select id="bucketPick">
+            <option value="session">Now</option>
+            <option value="next">Next</option>
+            <option value="someday">Later</option>
+          </select>
+        </label>
+        <label class="field" aria-label="Type">
+          <select id="kindPick">
+            <option value="feature">Feature</option>
+            <option value="fix">Fix</option>
+            <option value="improvement">Improvement</option>
+          </select>
+        </label>
+        <button id="addBtn" type="button">Add</button>
       </div>
       <p id="todo-error" class="todo-error" hidden></p>
+    </div>
+    <div class="filter-row">
+      <div class="seg" id="seg" role="group" aria-label="Filter">
+        <button type="button" data-b="all" aria-pressed="true">All</button>
+        <button type="button" data-b="session" aria-pressed="false">Now</button>
+        <button type="button" data-b="next" aria-pressed="false">Next</button>
+        <button type="button" data-b="someday" aria-pressed="false">Later</button>
+        <button type="button" data-b="done" aria-pressed="false">Done</button>
+      </div>
     </div>
   </div>
   <div id="list"></div>

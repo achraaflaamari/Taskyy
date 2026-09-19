@@ -60,8 +60,8 @@
   // ── Tuning (ms). Bigger = calmer. ───────────────────────────────
   var GAZE = {
     settleMs: 250,         // wait before the first turn
-    holdMs: 1000,           // min time on one direction before turning again
-    centerSettleMs: 500,  // pointer must rest in the centre zone this long before face-on
+    holdMs: 900,           // min time on one direction before turning again
+    centerSettleMs: 1400,  // pointer must rest in the centre zone this long before face-on
     leaveDelayMs: 1200,    // pointer left the webview -> return to face-on after this
     restAfterMs: 5000      // pointer stopped moving -> drift back to face-on (0 = never)
   };

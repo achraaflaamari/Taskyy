@@ -53,26 +53,9 @@
       squashEl: squashEl,
       bubbleEl: document.getElementById('bubble'),
       bubbleText: document.getElementById('bubble-text'),
-      statusDot: document.getElementById('status-dot'),
-      statusText: document.getElementById('status-text'),
-      metaLine: document.getElementById('meta-line'),
       offEl: document.getElementById('mascot-off'),
     },
   );
-
-  // ---------------------------------------------------------- toolbar
-  function post(type, extra) {
-    if (!vscode) { return; }
-    try { vscode.postMessage(Object.assign({ type: type }, extra || {})); }
-    catch (e) { /* host unavailable in preview */ }
-  }
-
-  var btnBoop = document.getElementById('btn-boop');
-  var btnSettings = document.getElementById('btn-settings');
-  var btnAnalytics = document.getElementById('btn-analytics');
-  if (btnBoop) { btnBoop.addEventListener('click', function () { ctl.boop(); }); }
-  if (btnSettings) { btnSettings.addEventListener('click', function () { post('openSettings'); }); }
-  if (btnAnalytics) { btnAnalytics.addEventListener('click', function () { post('openAnalytics'); }); }
 
   // ---------------------------------------------------------- pointer-follow gaze
   // Webview-local only: follows the mouse inside this view, back to center

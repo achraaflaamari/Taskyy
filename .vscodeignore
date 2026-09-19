@@ -1,6 +1,12 @@
-.gitignore
-tsconfig.json
-src/**
-DOCS.md
 .vscode/**
+.gitignore
+src/**
 test/**
+tsconfig.json
+.eslintrc*
+**/*.map
+**/*.ts
+DOCS.md
+ANALYTICS_PLAN.md
+*.vsix
+node_modules/.cache/**

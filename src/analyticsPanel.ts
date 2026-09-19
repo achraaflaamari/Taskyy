@@ -144,6 +144,12 @@ export class AnalyticsPanel {
   }
 
   private getHtml(webview: vscode.Webview): string {
+    const tokensUri = webview.asWebviewUri(
+      vscode.Uri.joinPath(this.extensionUri, 'media', 'shared', 'tokens.css'),
+    );
+    const mascotCssUri = webview.asWebviewUri(
+      vscode.Uri.joinPath(this.extensionUri, 'media', 'shared', 'mascot.css'),
+    );
     const scriptUri = webview.asWebviewUri(
       vscode.Uri.joinPath(this.extensionUri, 'media', 'analytics', 'analytics.js'),
     );
@@ -166,6 +172,8 @@ export class AnalyticsPanel {
 <meta charset="utf-8" />
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src ${webview.cspSource} data:; style-src ${webview.cspSource} 'unsafe-inline'; script-src 'nonce-${n}';" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="stylesheet" href="${tokensUri}" />
+<link rel="stylesheet" href="${mascotCssUri}" />
 <link rel="stylesheet" href="${styleUri}" />
 </head>
 <body data-mascots-root="${mascotsRoot}">
@@ -192,30 +200,30 @@ export class AnalyticsPanel {
 
   <section class="sec" id="sec-kpi" aria-label="Key metrics"><h2>Overview</h2><div id="kpi" class="kpi-grid"></div></section>
 
-  <section class="sec" id="sec-trend" aria-label="Time trend"><h2>Time trend</h2><div id="trend-chart"></div><p id="trend-text" class="head-insight"></p></section>
+  <section class="sec" id="sec-trend" aria-label="Time trend"><h2>Time trend</h2><div class="chart-wrap" id="trend-chart"></div><p id="trend-text" class="head-insight"></p></section>
 
   <div class="grid-2">
-    <section class="sec" id="sec-distribution" aria-label="Activity mix"><h2>Activity mix <span class="hint" title="Heuristic: test command running → testing; debug active → debugging; git event in last 60s → git; terminal in last 30s → terminal; else coding.">(estimated)</span></h2><div id="mix-chart"></div></section>
-    <section class="sec" id="sec-timeline" aria-label="Today timeline"><h2>Today timeline</h2><div id="timeline-chart"></div><p id="timeline-text" class="head-insight"></p></section>
+    <section class="sec" id="sec-distribution" aria-label="Activity mix"><h2>Activity mix <span class="hint" title="Heuristic: test command running → testing; debug active → debugging; git event in last 60s → git; terminal in last 30s → terminal; else coding.">(estimated)</span></h2><div class="chart-wrap" id="mix-chart"></div></section>
+    <section class="sec" id="sec-timeline" aria-label="Today timeline"><h2>Today timeline</h2><div class="chart-wrap" id="timeline-chart"></div><p id="timeline-text" class="head-insight"></p></section>
   </div>
 
-  <section class="sec" id="sec-focus" aria-label="Focus"><h2>Focus</h2><div id="focus-chart"></div><p id="focus-text" class="head-insight"></p></section>
+  <section class="sec" id="sec-focus" aria-label="Focus"><h2>Focus</h2><div class="chart-wrap" id="focus-chart"></div><p id="focus-text" class="head-insight"></p></section>
 
   <div class="grid-2">
-    <section class="sec" id="sec-files" aria-label="Top files"><h2>Top files</h2><div id="files-chart"></div><p id="files-text" class="head-insight"></p></section>
-    <section class="sec" id="sec-hotspots" aria-label="Folder hotspots"><h2>Hotspots</h2><div id="hotspots-chart"></div></section>
+    <section class="sec" id="sec-files" aria-label="Top files"><h2>Top files</h2><div class="chart-wrap" id="files-chart"></div><p id="files-text" class="head-insight"></p></section>
+    <section class="sec" id="sec-hotspots" aria-label="Folder hotspots"><h2>Hotspots</h2><div class="chart-wrap" id="hotspots-chart"></div></section>
   </div>
 
-  <section class="sec" id="sec-tests" aria-label="Tests"><h2>Tests</h2><div id="tests-chart"></div><p id="tests-text" class="head-insight"></p></section>
+  <section class="sec" id="sec-tests" aria-label="Tests"><h2>Tests</h2><div class="chart-wrap" id="tests-chart"></div><p id="tests-text" class="head-insight"></p></section>
 
   <div class="grid-2">
-    <section class="sec" id="sec-errors" aria-label="Errors"><h2>Errors</h2><div id="errors-chart"></div><p id="errors-text" class="head-insight"></p></section>
-    <section class="sec" id="sec-commits" aria-label="Commits"><h2>Commits</h2><div id="commits-chart"></div><p id="commits-text" class="head-insight"></p></section>
+    <section class="sec" id="sec-errors" aria-label="Errors"><h2>Errors</h2><div class="chart-wrap" id="errors-chart"></div><p id="errors-text" class="head-insight"></p></section>
+    <section class="sec" id="sec-commits" aria-label="Commits"><h2>Commits</h2><div class="chart-wrap" id="commits-chart"></div><p id="commits-text" class="head-insight"></p></section>
   </div>
 
   <section class="sec" id="sec-milestones" aria-label="Milestones"><h2>Milestones</h2><div id="milestones-list" class="milestones"></div></section>
 
-  <section class="sec" id="sec-tasks" aria-label="Tasks"><h2>Tasks</h2><div id="tasks-chart"></div><p id="tasks-text" class="head-insight"></p></section>
+  <section class="sec" id="sec-tasks" aria-label="Tasks"><h2>Tasks</h2><div class="chart-wrap" id="tasks-chart"></div><p id="tasks-text" class="head-insight"></p></section>
 
   <footer class="dash-foot">Stored locally in this workspace — relative paths and timings only, never code.</footer>
 </div>
