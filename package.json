@@ -3,7 +3,7 @@
   "displayName": "Taskyy",
   "description": "Taskyy — cute pet mascot companion for devs. 21 animals, todos, local time tracking & coding analytics. Todo, tasks, focus, time — stays quiet while you code.",
   "version": "0.5.0",
-  "publisher": "mascot",
+  "publisher": "achraaflaamari",
   "license": "MIT",
   "icon": "media/mascots/thumbs/fox.webp",
   "galleryBanner": { "color": "#1e1e1e", "theme": "dark" },
@@ -38,9 +38,7 @@
     "project",
     "workspace"
   ],
-  "repository": { "type": "git", "url": "https://github.com/mascot/mascot-explorer" },
-  "bugs": { "url": "https://github.com/mascot/mascot-explorer/issues" },
-  "homepage": "https://github.com/mascot/mascot-explorer#readme",
+  "repository": { "type": "git", "url": "https://github.com/achraaflaamari/Taskyy" },
   "engines": {
     "vscode": "^1.85.0"
   },

@@ -2,6 +2,8 @@
 
 A calm pet companion for your workspace: 21 animals, a simple todo list, and local time analytics. It stays quiet while you code.
 
+[⬇ Install from the VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=achraaflaamari.taskyy)
+
 ![Taskyy overview](media/demo/demo-full.gif)
 
 ## What you get
@@ -45,7 +47,7 @@ Three views, one pet:
 
 ## Get started
 
-1. Install from the Marketplace, or `code --install-extension taskyy-0.5.0.vsix`, then **Reload Window**.
+1. Install from the [Marketplace](https://marketplace.visualstudio.com/items?itemName=achraaflaamari.taskyy), or `code --install-extension taskyy-0.5.0.vsix`, then **Reload Window**.
 2. Explorer → **Mascot** is at the bottom.
 3. Activity Bar → **Taskyy Todo** (keep it ≥ 280 px wide).
 4. Click the `graph` icon (or run `Mascot: Open Analytics`) for the full dashboard.
@@ -91,4 +93,4 @@ Commands (`Ctrl+Shift+P` → `Mascot: …`): `Boop` · `Open Settings` · `Selec
 
 MIT — see [LICENSE](LICENSE).
 
-[Issues](https://github.com/mascot/mascot-explorer/issues) · [Changelog](CHANGELOG.md)
+[Issues](https://github.com/achraaflaamari/Taskyy/issues)
