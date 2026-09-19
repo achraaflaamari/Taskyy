@@ -1,0 +1,227 @@
+{
+  "name": "mascot-explorer",
+  "displayName": "Mascot",
+  "description": "A calm workspace companion that lives in the Explorer and reacts to errors, terminal results and commits — never to typing.",
+  "version": "0.5.0",
+  "publisher": "mascot",
+  "license": "MIT",
+  "icon": "media/mascots/thumbs/fox.webp",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": ["Other"],
+  "activationEvents": [
+    "onView:mascotExplorerView",
+    "onView:mascotTodoView",
+    "onCommand:mascot.openSettings",
+    "onCommand:mascot.selectCharacter",
+    "onCommand:mascot.setSize",
+    "onCommand:mascot.toggleBehaviour",
+    "onCommand:mascot.boop",
+    "onCommand:mascot.openAnalytics",
+    "onCommand:mascot.resetStats",
+    "onCommand:mascot.clearCompletedTodos"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "mascotAnalytics",
+          "title": "Mascot Analytics",
+          "icon": "media/activity-icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "explorer": [
+        {
+          "id": "mascotExplorerView",
+          "name": "Mascot",
+          "type": "webview"
+        }
+      ],
+      "mascotAnalytics": [
+        {
+          "id": "mascotTodoView",
+          "name": "Todo",
+          "type": "webview"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "mascot.boop",
+        "title": "Mascot: Boop",
+        "category": "Mascot"
+      },
+      {
+        "command": "mascot.openSettings",
+        "title": "Mascot: Open Settings",
+        "category": "Mascot",
+        "icon": "$(gear)"
+      },
+      {
+        "command": "mascot.selectCharacter",
+        "title": "Mascot: Select Character",
+        "category": "Mascot"
+      },
+      {
+        "command": "mascot.setSize",
+        "title": "Mascot: Set Size",
+        "category": "Mascot"
+      },
+      {
+        "command": "mascot.toggleBehaviour",
+        "title": "Mascot: Toggle Behaviour",
+        "category": "Mascot"
+      },
+      {
+        "command": "mascot.openAnalytics",
+        "title": "Mascot: Open Analytics",
+        "category": "Mascot"
+      },
+      {
+        "command": "mascot.resetStats",
+        "title": "Mascot: Reset Project Stats",
+        "category": "Mascot"
+      },
+      {
+        "command": "mascot.clearCompletedTodos",
+        "title": "Mascot: Clear Completed Todos",
+        "category": "Mascot"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "mascot.openSettings",
+          "when": "view == mascotExplorerView",
+          "group": "navigation@1"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Mascot",
+      "properties": {
+        "mascot.enabled": {
+          "type": "boolean",
+          "default": true,
+          "order": 1,
+          "description": "Show the companion in the Explorer."
+        },
+        "mascot.characterId": {
+          "type": "string",
+          "default": "fox",
+          "order": 2,
+          "enum": [
+            "bear",
+            "bunny",
+            "cat",
+            "deer",
+            "dino",
+            "fox",
+            "frog",
+            "hamster",
+            "hedgehog",
+            "koala",
+            "mouse",
+            "otter",
+            "owl",
+            "panda",
+            "penguin",
+            "pug",
+            "raccoon",
+            "redpanda",
+            "sheep",
+            "sloth",
+            "tiger"
+          ],
+          "description": "Companion character shown in the Explorer."
+        },
+        "mascot.size": {
+          "type": "number",
+          "default": 140,
+          "minimum": 64,
+          "maximum": 320,
+          "order": 3,
+          "description": "Companion size in pixels. Presets: Small 96, Medium 140, Large 200."
+        },
+        "mascot.clickReaction": {
+          "type": "boolean",
+          "default": true,
+          "order": 4,
+          "description": "Clicking the companion plays a brief squash-and-smile."
+        },
+        "mascot.autoReaction": {
+          "type": "boolean",
+          "default": true,
+          "order": 5,
+          "description": "Ambient reactions when idle. Drowsy after 30 seconds, asleep after 5 minutes — click to wake."
+        },
+        "mascot.analytics.enabled": {
+          "type": "boolean",
+          "default": true,
+          "order": 6,
+          "description": "Master switch for project analytics. Off stops all tracking and hides live numbers."
+        },
+        "mascot.analytics.idleSeconds": {
+          "type": "number",
+          "default": 120,
+          "minimum": 30,
+          "order": 7,
+          "description": "Seconds without activity before time stops counting."
+        },
+        "mascot.analytics.trackFiles": {
+          "type": "boolean",
+          "default": true,
+          "order": 8,
+          "description": "Store per-file time. Off stores folder hotspots only."
+        },
+        "mascot.analytics.retentionDays": {
+          "type": "number",
+          "default": 365,
+          "minimum": 7,
+          "order": 9,
+          "description": "How many days of stats to keep."
+        },
+        "mascot.reactToErrors": {
+          "type": "boolean",
+          "default": true,
+          "order": 10,
+          "description": "Companion reacts when errors appear or clear."
+        },
+        "mascot.reactToTerminal": {
+          "type": "boolean",
+          "default": true,
+          "order": 11,
+          "description": "Companion reacts to terminal command results."
+        },
+        "mascot.breakReminderMinutes": {
+          "type": "number",
+          "default": 0,
+          "minimum": 0,
+          "order": 12,
+          "description": "Nudge after N minutes without a break (0 = off)."
+        },
+        "mascot.followPointer": {
+          "type": "boolean",
+          "default": true,
+          "order": 13,
+          "description": "The mascot follows the mouse pointer inside its views (webview-local only)."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "vscode:prepublish": "npm run compile",
+    "test": "node --test \"test/*.test.js\""
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/vscode": "^1.85.0",
+    "typescript": "^5.4.0"
+  }
+}

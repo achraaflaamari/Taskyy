@@ -1,0 +1,6 @@
+.gitignore
+tsconfig.json
+src/**
+DOCS.md
+.vscode/**
+test/**
