@@ -1,156 +1,94 @@
 # Taskyy — Cute Pet Mascot for Devs
 
-> **Search keywords:** `pet` `mascot` `animal` `cute` `dev` `coding` `todo` `task` `time` `timetracker` `productivity` `analytics` `dashboard` `focus`
+A calm pet companion for your workspace: 21 animals, a simple todo list, and local time analytics. It stays quiet while you code.
 
-A calm **pet** & **animal mascot companion** for **devs** & **coding** — lives in the Explorer, plus local **todo / task** manager and **time tracking** & **analytics**. The **mascot** stays quiet while you **code**/**type** and reacts to things that matter: errors, terminal and task results, commits, save/debug milestones — plus a boop when you need one.
+![Taskyy overview](media/demo/demo-full.gif)
 
-*Formerly “Mascot” — now **Taskyy**. All `mascot.*` settings and commands still work.*
+## What you get
 
-![Taskyy — pet mascot + todo + time analytics](media/demo/taskyy-demo.gif)
+Three views, one pet:
 
-21 animals, sizes Small 96 / Medium 140 / Large 200 (or any 64–320 px),
-configured in the native Settings UI (`mascot.*`).
+| View | Where | What it does |
+| --- | --- | --- |
+| **Mascot** | Explorer (bottom) | Your companion. Watches your pointer, reacts to errors, terminal results, commits and saves. Click to boop. Sleeps when idle. |
+| **Todo** | Activity Bar | A small task list: `This session / Next up / Someday`, with `Feature / Fix / Improvement` labels, notes, deadlines, and a `Done` tab. |
+| **Analytics** | Editor tab | Your coding stats: active time, sessions, files, tests, errors, commits, tasks. Four ranges: `Today / 7d / 30d / All`. |
 
-> Add your GIF to `media/demo/taskyy-demo.gif` (and thumb `media/demo/taskyy-thumb.png` for the video link below). See `media/demo/README.md`.
+![Mascot in the Explorer](media/demo/demo-explorer.gif)
 
-## The companion
+![Todo list](media/demo/demo-todo.gif)
 
-```
-┌───────────────────────────────┐
-│ COMPANION        [chart][♡][⚙]│  status + toolbar (analytics / boop / settings)
-│ [one-line bubble when events] │  rate-limited, auto-hides
-│            MASCOT             │  fixed resting face, event reactions overlay it
-│  Event-driven · calm footer   │  error-count aware
-└───────────────────────────────┘
-```
+## Mascot
 
-Behaviour:
+- 21 animals (fox, cat, bunny…) and 3 sizes (Small 96, Medium 140, Large 200 px).
+- Follows your pointer inside its view, sleeps after 5 minutes idle — click to wake.
+- Title-bar buttons: `graph` opens Analytics, `heart` boops, `gear` opens Settings.
 
-- Errors appear → concerned face. Errors cleared → pleased + "Clean."
-- Command fails → "Command failed." Task passes → "Task passed."
-- Commit → short celebration + "Committed."
-- Save / debug start / stop → brief acknowledgement, never wakes sleep.
-- Idle 30 s → drowsy, 5 min → asleep (click to wake). Ambient smiles and
-  blinks while awake. The mascot follows the mouse pointer inside its own
-  views only (webview-local gaze via `mascot.followPointer`, default on,
-  off under reduced-motion and while asleep) — typing, caret and focus
-  never move the face; they advance the analytics clock silently.
+![Mascot screenshot](media/demo/screenshot-explorer.png)
 
-## Sidebar TODO (v0.5)
+## Todo
 
-Activity Bar → **Mascot Analytics** → **Todo** view (replaces the v0.4
-Project Summary; stats live in the dashboard now). Three buckets — This
-session, Next up, Someday — and three types — Feature (`FEAT`),
-Fix (`FIX`), Improvement (`IMPR`).
+- Add with **Enter**, click a row for notes, deadline, and move/delete.
+- Filter with `All / Now / Next / Later / Done`. `Done` has **Clear done** at the top.
+- When `Now` is empty, `Move Next → Now` appears to pull the next task forward.
+- Checking a task celebrates on every surface (`starstruck` + “Done.”).
 
-Add from the top input (`Enter` saves), click a row to expand its inline
-editor: notes, deadline (date picker, overdue dates highlighted), bucket
-and type changers, delete. Checkbox completes a task (celebration face on
-every surface + counts toward dashboard section L). `Clear done` and
-`Mascot: Clear Completed Todos` delete all completed tasks.
+![Todo screenshot](media/demo/screenshot-todo.png)
 
-## Analytics (v0.4, plus v0.5 section L)
+## Analytics
 
-Full **Mascot Analytics** editor-tab dashboard (singleton, sticky
-shrinking header, Today/7d/30d/All ranges, 12 sections: KPI row, time
-trend, activity mix (estimated), today timeline, focus, top files (click
-to open), hotspots, tests, errors, commits, milestones timeline, tasks).
+- 12 sections: active time, sessions, files, hotspots, tests, errors, commits, tasks, and more.
+- Everything is estimated from local activity and labelled as such.
+- Open it from the Mascot title bar (`graph` icon) or with `Mascot: Open Analytics`.
 
-Tracking: 5 s tick, idle stops counting past `mascot.analytics.idleSeconds`
-(min 30). Sessions split on idle gaps (no minimum length). Classification
-(test > debug > git > terminal > coding) is labelled "(estimated)".
-Test detection is command-level (`jest|vitest|mocha|pytest|go test|cargo
-test|dotnet test|phpunit|npm test|…`) or task group `Test`. Errors count
-workspace `Error` diagnostics with recovery timings. Commits come from the
-built-in git API with a `.git/logs/HEAD` fallback.
+![Analytics dashboard](media/demo/screenshot-analytics.png)
 
-Settings: `mascot.analytics.enabled` (master switch — off stops all
-writes/ticks and hides live numbers), `idleSeconds` (120), `trackFiles`
-(false keeps folders only), `retentionDays` (365, pruned on activation),
-`reactToErrors`, `reactToTerminal`, `breakReminderMinutes` (0 = off;
-sleepy nudge + "N min without a break", max once/hour, click snoozes),
-`followPointer` (default on; webview-local gaze only).
+## Get started
 
-Tasks completed per day feed dashboard section L ("N open · M overdue ·
-K done in range"); checking a task celebrates on all three mascots.
+1. Install from the Marketplace, or `code --install-extension taskyy-0.5.0.vsix`, then **Reload Window**.
+2. Explorer → **Mascot** is at the bottom.
+3. Activity Bar → **Taskyy Todo** (keep it ≥ 280 px wide).
+4. Click the `graph` icon (or run `Mascot: Open Analytics`) for the full dashboard.
 
-`Mascot: Reset Project Stats` clears all `stats:v1:*` keys after a modal
-confirmation. Critical failures (`errorsUp`, `termFail`) also raise a
-warning notification when the Explorer view is not visible.
+## Settings
 
-## Run it
+All settings live under `mascot.*` (Settings UI → Extensions → Mascot):
 
-**Option A — debug (F5):**
+| Setting | Default | What it does |
+| --- | --- | --- |
+| `mascot.enabled` | `true` | Show the companion. |
+| `mascot.characterId` | `"fox"` | One of the 21 animals. |
+| `mascot.size` | `140` | Size in px (64–320). Presets: 96 / 140 / 200. |
+| `mascot.clickReaction` | `true` | Boop animation on click. |
+| `mascot.autoReaction` | `true` | Ambient faces when idle (drowsy at 30 s, asleep at 5 min). |
+| `mascot.followPointer` | `true` | The pet follows the pointer inside its views. |
+| `mascot.reactToErrors` | `true` | React when errors appear or clear. |
+| `mascot.reactToTerminal` | `true` | React to terminal command results. |
+| `mascot.breakReminderMinutes` | `0` | Nudge after N minutes without a break (`0` = off). |
+| `mascot.analytics.enabled` | `true` | Master switch for tracking. Off stops everything. |
+| `mascot.analytics.idleSeconds` | `120` | Seconds idle before time stops counting (min 30). |
+| `mascot.analytics.trackFiles` | `true` | Store per-file time. Off stores folder hotspots only. |
+| `mascot.analytics.retentionDays` | `365` | Days of stats to keep (min 7). |
 
-1. Open this folder (`VscodeExtension/`) in VS Code.
-2. `npm install`, `npm run compile`.
-3. Press **F5** (uses `.vscode/launch.json`). The Mascot view sits at the
-   bottom of the Explorer.
+Commands (`Ctrl+Shift+P` → `Mascot: …`): `Boop` · `Open Settings` · `Select Character` · `Set Size` · `Toggle Behaviour` · `Open Analytics` · `Reset Project Stats` · `Clear Completed Todos`.
 
-**Option B — install the packaged build:**
-
-```bash
-npm run compile
-npx @vscode/vsce package --no-dependencies --allow-missing-repository
-code --install-extension taskyy-0.5.0.vsix
-```
-
-[![Watch demo video](media/demo/taskyy-thumb.png)](https://www.youtube.com/watch?v=XXXX)
-*Click the image for the full video — or see `media/demo/taskyy-demo.gif` above.*
-
-Then **reload the window** (`Developer: Reload Window`) so the newly
-installed extension activates.
-
-## If the view says "no data provider registered"
-
-That message means the view is visible but the extension has not activated
-yet in this window. Fix:
-
-1. `Ctrl+Shift+P` → **Developer: Reload Window**.
-2. Check the Extensions view: **Mascot** must be present and enabled.
-3. Still failing? Check `Output` → **Log (Extension Host)** and
-   `Help` → **Toggle Developer Tools** console for activation errors, then
-   reinstall: `code --uninstall-extension mascot.taskyy` and
-   install the `.vsix` again, followed by a window reload.
-
-## Layout
-
-```
-src/extension.ts            activate: providers + signal bus + data layer + todo/dashboard plumbing + break reminder
-src/activityHub.ts          the ONLY event subscriber (silent activity → tracker; rare signals/notices → companion)
-src/tracker.ts              5 s tick, idle/session accounting, classification, file/folder/hourly attribution
-src/statsStore.ts           persistence + aggregation (sole owner of stats:v1:*), cached range queries, prune/reset, tasks roll-up
-src/gitStats.ts             git API wrapper (HEAD watch, uncommitted + total counts, .git/logs fallback)
-src/todoStore.ts            workspace TODO list (buckets/kinds/notes/deadlines, validation, completion stamps)
-src/todoProvider.ts         sidebar Todo view (Activity Bar container, 72 px mini mascot, bucket groups)
-src/analyticsPanel.ts       singleton dashboard panel (retainContextWhenHidden, range, openFile whitelist)
-src/mascotViewProvider.ts   WebviewViewProvider (companion card HTML shell + toolbar message bridge)
-src/settings.ts             mascot.* + mascot.analytics.* + react/break/follow settings (normalize/clamp)
-src/signals.ts              Signal→Reaction registry (6 event-only signals + bubble lines + cooldowns)
-src/mascotQuickPick.ts      native settings menu (character / size / behaviour)
-test/                       node --test suites: statsStore, tracker, classify, charts, todoStore, aim (66 tests)
-media/mascotView.js         companion runtime (controller + webview-local pointer gaze)
-media/todo.js/.css          todo runtime + styling (--vscode-* tokens only)
-media/analytics/            analytics.js (12 sections + moods + observer + gaze) / analytics.css / charts.js (hand SVG)
-media/shared/               characters/sprite/aim/reactions/mascotController (one controller for all surfaces)
-media/mascots/              42 atlases + 21 thumbnails
-media/activity-icon.svg     Activity Bar icon (24×24 monochrome currentColor)
-ANALYTICS_PLAN.md           professional analytics build plan (v0.4 binding; gaze sections superseded in v0.5)
-DOCS.md                     base spec + v0.3 event-only amendment + v0.4 close-out + v0.5 amendment
-```
-
-## Commands
-
-`Mascot: Boop` · `Mascot: Open Settings` · `Mascot: Select Character` ·
-`Mascot: Set Size` · `Mascot: Toggle Behaviour` ·
-`Mascot: Open Analytics` (full dashboard singleton) ·
-`Mascot: Reset Project Stats` (modal confirmation) ·
-`Mascot: Clear Completed Todos`.
+> Formerly named **Mascot** — existing `mascot.*` settings keep working.
 
 ## Privacy
 
-Stored locally in this workspace — relative paths and timings only, never
-code. All state lives in `workspaceState` (`stats:v1:*` for analytics,
-`todos:v1:list` for tasks — titles/notes/deadlines never leave the
-workspace or enter telemetry); no file contents, terminal output, URLs,
-machine identifiers, network requests, or telemetry.
+100% local. No network, no telemetry, no account.
+
+- Stats and todos live in `workspaceState` (`stats:v1:*`, `todos:v1:list`) — per project, survives restarts.
+- Only relative file paths and timings are stored. Never code content, terminal output, or file contents.
+- `Mascot: Reset Project Stats` deletes all stats for the workspace.
+
+## Credits
+
+- Mascot art and interaction model: [page-mascot](https://github.com/nilbuild/page-mascot) by [Kamran Ahmed](https://kamran.fyi), MIT. The 21 animal sprite atlases are bundled in `media/mascots/`. See [LICENSE](LICENSE) for the full third-party notice.
+- Demo: [koboyo.com/page-mascot](https://koboyo.com/page-mascot).
+
+## License
+
+MIT — see [LICENSE](LICENSE).
+
+[Issues](https://github.com/mascot/mascot-explorer/issues) · [Changelog](CHANGELOG.md)
